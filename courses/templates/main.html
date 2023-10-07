@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{%load static%}
+
+{% block title %}
+Main
+{% endblock %}
+
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<h1>Bem-vindo à Página Principal</h1>
+<!-- Lista de Cursos Disponíveis -->
+<h2>Cursos Disponíveis:</h2>
+<ul>
+    {% for curso in cursos %}
+        <li>
+            <div class="card">
+                <strong>Curso:</strong> {{ curso.título }}<br>
+        
+                <img src="{{ curso.image.url }}" alt="{{ curso.título }}" width="200" height="200">
+                </br>
+                <strong>Categorias:</strong>
+                {% for categoria in curso.categorias.all %}
+                    {{ categoria.nome }}
+                {% endfor %}<br>
+                <strong>Preço:</strong> R$ {{ curso.preço }}<br>
+                <strong>Autor:</strong> {{ curso.instrutor }}
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+<!-- Botão para Instrutores (se o usuário for um instrutor) -->
+{% if is_instrutor %}
+    <a href="{% url 'instrutores_area' %}">Área de Instrutores</a>
+{% endif %}
+{% endblock %}

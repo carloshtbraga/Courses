@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{%load static%}
+
+{% block title %}
+Cadastro
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/cadastro.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Cadastro</h1>
+    <form action="{% url 'cadastro' %}" method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="username" id="" placeholder="Username">
+        <input type="email" name="email" id="" placeholder="Email">
+        <input type="password" name="password" id="" placeholder="Password">
+
+        <label for="is_instructor">Deseja ser um instrutor? Instrutores podem adicionar cursos</label>
+        <select name="is_instructor" id="is_instructor">
+            <option value="0">Não</option>
+            <option value="1">Sim</option>
+        </select>
+
+        <div id="biography-field">
+            <label for="biography">Biografia:</label>
+            <textarea name="biography" id="biography"></textarea>
+        </div>
+
+        <input type="submit" value="Cadastrar">
+    </form>
+
+    <script>
+        const is_instructor = document.getElementById('is_instructor');
+        const biographyField = document.getElementById('biography-field');
+
+        is_instructor.addEventListener('change', () => {
+            if (is_instructor.value === '1') {
+                biographyField.style.display = 'block';
+            } else {
+                biographyField.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %}

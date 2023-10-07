@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{%load static%}
+
+{% block title %}
+Index - Courses
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1>Devs4Courses</h1>
+<a href="{% url 'cadastro' %}">Cadastrar</a>
+<a href="{% url 'login' %}">Logar</a>
+{% endblock %}

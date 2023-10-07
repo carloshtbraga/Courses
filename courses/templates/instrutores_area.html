@@ -1,0 +1,46 @@
+{% extends 'base.html' %} {%load static%} {% block title %} Área de Instrutores
+{% endblock %} {% block styles %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/instrutores_area.css' %}"
+/>
+
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>Cadastro de Curso</h1>
+  <form
+    method="POST"
+    action="{% url 'instrutores_area' %}"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <label for="titulo">Título:</label>
+    <input type="text" name="titulo" id="titulo" required /><br />
+
+    <label for="descricao">Descrição:</label>
+    <textarea name="descricao" id="descricao" required></textarea><br />
+
+    <label for="preco">Preço:</label>
+    <input type="text" name="preco" id="preco" required /><br />
+
+    <label for="categorias">Categorias:</label>
+    {% for categoria in categorias %}
+    <input
+      type="checkbox"
+      name="categorias"
+      id="categoria{{ categoria.id }}"
+      value="{{ categoria.id }}"
+    />
+    <label for="categoria{{ categoria.id }}">{{ categoria.nome }}</label>
+    {% endfor%}
+    <label for="imagem"
+      >Imagem
+      <input type="file" name="imagem" id="imagem" accept="image/*" required
+    /></label>
+    <br />
+    <br />
+    <input type="submit" value="Cadastrar Curso" />
+  </form>
+</div>
+{% endblock %}
