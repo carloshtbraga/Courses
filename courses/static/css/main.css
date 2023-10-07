@@ -48,3 +48,24 @@ a:hover {
     padding: 10px;
     text-align: left;
 }
+
+
+/* Estilos para o botão de logout */
+.logout-button {
+    background-color: #dc3545; /* Cor de fundo vermelha (pode ser alterada) */
+    color: #fff; /* Cor do texto (branco) */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+    background-color: #c82333; /* Cor de fundo vermelha mais escura ao passar o mouse */
+}

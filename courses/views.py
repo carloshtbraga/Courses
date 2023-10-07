@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from .models import Instrutor, Curso, Categoria
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
+from django.contrib.auth import logout as django_logout
 
 
 def index(request):
@@ -50,12 +51,22 @@ def login(request):
             return HttpResponse("Usuário ou senha inválidos")
 
 
+def logout(request):
+    django_logout(request)
+    return redirect("index")
+
+
 def main(request):
     is_logged = request.user.is_authenticated
     if is_logged:
+        categorias = Categoria.objects.all()
         cursos = Curso.objects.all()
         is_instrutor = request.user.groups.filter(name="Instrutores").exists()
-        context = {"cursos": cursos, "is_instrutor": is_instrutor}
+        context = {
+            "cursos": cursos,
+            "is_instrutor": is_instrutor,
+            "categorias": categorias,
+        }
         return render(request, "main.html", context)
 
     else:
@@ -63,36 +74,56 @@ def main(request):
 
 
 def instrutores_area(request):
-    if request.method == "GET":
-        categorias = Categoria.objects.all()
-        context = {"categorias": categorias}
-        return render(request, "instrutores_area.html", context)
-    elif request.method == "POST":
-        # Obtenha os dados do formulário
-        titulo = request.POST.get("titulo")
-        descricao = request.POST.get("descricao")
-        preco = request.POST.get("preco")
-        categorias = request.POST.getlist("categorias")
+    is_instrutor = request.user.groups.filter(name="Instrutores").exists()
+    if is_instrutor:
+        if request.method == "GET":
+            categorias = Categoria.objects.all()
+            context = {"categorias": categorias}
+            return render(request, "instrutores_area.html", context)
+        elif request.method == "POST":
+            # Obtenha os dados do formulário
+            titulo = request.POST.get("titulo")
+            descricao = request.POST.get("descricao")
+            preco = request.POST.get("preco")
+            categorias = request.POST.getlist("categorias")
 
-        # Acesse a imagem enviada pelo usuário
-        imagem = request.FILES.get("imagem")
+            # Acesse a imagem enviada pelo usuário
+            imagem = request.FILES.get("imagem")
 
-        # Crie o curso e associe-o ao instrutor
-        curso = Curso.objects.create(
-            título=titulo,
-            descrição=descricao,
-            preço=preco,
-            instrutor=request.user.instrutor,
-            image=imagem,  # Associe a imagem ao curso
-        )
+            # Crie o curso e associe-o ao instrutor
+            curso = Curso.objects.create(
+                título=titulo,
+                descrição=descricao,
+                preço=preco,
+                instrutor=request.user.instrutor,
+                image=imagem,  # Associe a imagem ao curso
+            )
 
-        # Associe as categorias selecionadas ao curso
-        curso.categorias.set(categorias)
+            # Associe as categorias selecionadas ao curso
+            curso.categorias.set(categorias)
 
-        return redirect("main")
-    return render(request, "instrutores_area.html")
+            return redirect("main")
+    else:
+        return HttpResponse("Você não é um instrutor")
 
 
 def course_details(request, curso_id):
-    curso = get_object_or_404(Curso, pk=curso_id)
-    return render(request, "course_details.html", {"curso": curso})
+    is_logged = request.user.is_authenticated
+    if is_logged:
+        curso = get_object_or_404(Curso, pk=curso_id)
+        return render(request, "course_details.html", {"curso": curso})
+    else:
+        return HttpResponse("Você não está logado")
+
+
+def search_courses(request):
+    categorias = Categoria.objects.all()
+    title = request.GET.get("title", "")
+    category_id = request.GET.get("category", "")
+
+    courses = Curso.objects.filter(título__icontains=title)
+
+    if category_id:
+        courses = courses.filter(categorias__id=category_id)
+
+    return render(request, "main.html", {"cursos": courses, "categorias": categorias})
