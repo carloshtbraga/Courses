@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User, Group
 from .models import Instrutor, Curso, Categoria
@@ -29,8 +29,9 @@ def cadastro(request):
             if is_instructor == "1":
                 grupo_instrutores = Group.objects.get(name="Instrutores")
                 user.groups.add(grupo_instrutores)
+                foto = request.FILES.get("imagem")
                 biography = request.POST.get("biography")
-                instrutor = Instrutor(user=user, biografia=biography)
+                instrutor = Instrutor(user=user, biografia=biography, foto=foto)
                 instrutor.save()
             return redirect("login")
 
@@ -90,3 +91,8 @@ def instrutores_area(request):
 
         return redirect("main")
     return render(request, "instrutores_area.html")
+
+
+def course_details(request, curso_id):
+    curso = get_object_or_404(Curso, pk=curso_id)
+    return render(request, "course_details.html", {"curso": curso})

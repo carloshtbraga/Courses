@@ -12,7 +12,7 @@ Cadastro
 
 {% block content %}
 <h1>Cadastro</h1>
-    <form action="{% url 'cadastro' %}" method="POST">
+    <form action="{% url 'cadastro' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
         <input type="text" name="username" id="" placeholder="Username">
@@ -30,19 +30,29 @@ Cadastro
             <textarea name="biography" id="biography"></textarea>
         </div>
 
+        <div id="foto-field">
+        <label for="imagem">Sua foto</label>
+        <input type="file" name="imagem" id="imagem" accept="image/*" required />
+        </div>
+
         <input type="submit" value="Cadastrar">
     </form>
-
+    <a href="{% url 'index' %}">Voltar</a>
     <script>
-        const is_instructor = document.getElementById('is_instructor');
-        const biographyField = document.getElementById('biography-field');
-
-        is_instructor.addEventListener('change', () => {
-            if (is_instructor.value === '1') {
-                biographyField.style.display = 'block';
-            } else {
-                biographyField.style.display = 'none';
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            const is_instructor = document.getElementById('is_instructor');
+            const biographyField = document.getElementById('biography-field');
+            const fotoField = document.getElementById('foto-field');
+        
+            is_instructor.addEventListener('change', () => {
+                if (is_instructor.value === '1') {
+                    biographyField.style.display = 'block';
+                    fotoField.style.display = 'block';
+                } else {
+                    biographyField.style.display = 'none';
+                    fotoField.style.display = 'none';
+                }
+            });
         });
-    </script>
+        </script>
 {% endblock %}

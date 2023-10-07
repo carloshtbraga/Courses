@@ -1,0 +1,60 @@
+/* Estilos para a página de detalhes do curso */
+.course-title {
+    margin-top: 20px;
+    font-size: 28px;
+    color: #333;
+}
+
+.course-details {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.course-image {
+    flex: 0 0 30%;
+}
+
+.course-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.course-info {
+    flex: 0 0 65%;
+    text-align: left;
+}
+
+.course-info strong {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.course-description {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Estilos para o botão "Voltar para a Página Principal" */
+.back-button {
+    margin-top: 20px;
+}
+
+/* Estilos para links */
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+}

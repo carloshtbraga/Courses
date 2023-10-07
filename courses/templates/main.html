@@ -20,10 +20,12 @@ Main
     {% for curso in cursos %}
         <li>
             <div class="card">
+                <a href="{% url 'course_details' curso.id %}">
                 <strong>Curso:</strong> {{ curso.título }}<br>
         
                 <img src="{{ curso.image.url }}" alt="{{ curso.título }}" width="200" height="200">
                 </br>
+            </a>
                 <strong>Categorias:</strong>
                 {% for categoria in curso.categorias.all %}
                     {{ categoria.nome }}
@@ -34,8 +36,12 @@ Main
         </li>
     {% endfor %}
 </ul>
+
+<a href="{% url 'cadastro' %}">Cadastro</a>
+<a href="{% url 'login' %}">Login</a>
 <!-- Botão para Instrutores (se o usuário for um instrutor) -->
 {% if is_instrutor %}
     <a href="{% url 'instrutores_area' %}">Área de Instrutores</a>
 {% endif %}
 {% endblock %}
+
