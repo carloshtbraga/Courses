@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User, Group
-from .models import Instrutor, Curso, Categoria
+from .models import Instrutor, Curso, Categoria, Carrinho
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
@@ -127,3 +127,93 @@ def search_courses(request):
         courses = courses.filter(categorias__id=category_id)
 
     return render(request, "main.html", {"cursos": courses, "categorias": categorias})
+
+
+def carrinho(request):
+    is_logged = request.user.is_authenticated
+    if is_logged:
+        try:
+            carrinho = Carrinho.objects.get(user=request.user)
+            cursos = carrinho.cursos.all()
+            total = sum(curso.preço for curso in cursos)
+            context = {
+                "cursos": cursos,
+                "total": total,
+            }
+            return render(request, "carrinho.html", context)
+        except Carrinho.DoesNotExist:
+            return HttpResponse("Carrinho vazio")
+    else:
+        return HttpResponse("Você não está logado")
+
+
+def add_to_cart(request, curso_id):
+    is_logged = request.user.is_authenticated
+    if is_logged:
+        curso = Curso.objects.get(pk=curso_id)
+
+        carrinho, created = Carrinho.objects.get_or_create(user=request.user)
+        if curso not in carrinho.cursos.all():
+            carrinho.cursos.add(curso)
+
+        return redirect("course_details", curso_id=curso_id)
+    else:
+        return HttpResponse("Você não está logado")
+
+
+def remove_from_cart(request, curso_id):
+    is_logged = request.user.is_authenticated
+    if is_logged:
+        curso = get_object_or_404(Curso, pk=curso_id)
+
+        try:
+            carrinho = Carrinho.objects.get(user=request.user)
+            if curso in carrinho.cursos.all():
+                carrinho.cursos.remove(curso)
+            return redirect("carrinho")
+        except Carrinho.DoesNotExist:
+            return HttpResponse("Carrinho vazio")
+    else:
+        return HttpResponse("Você não está logado")
+
+
+from django.shortcuts import render, redirect
+from .models import Carrinho, Pedido
+
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Carrinho, Pedido, Curso
+
+
+def checkout(request):
+    if request.method == "POST":
+        user = request.user
+        try:
+            carrinho = Carrinho.objects.get(user=user)
+            cursos = carrinho.cursos.all()
+            total = sum(curso.preço for curso in cursos)
+
+            # Crie o pedido com status "Aguardando Pagamento"
+            pedido = Pedido.objects.create(user=user, total=total)
+            pedido.cursos.set(cursos.all())
+
+            # Limpe o carrinho após a conclusão da compra
+            carrinho.cursos.clear()
+
+            # Redirecione para uma página de confirmação ou carrinho, você decide
+            return redirect(
+                "checkout_confirmacao"
+            )  # Você pode redirecionar para a página de carrinho
+
+        except Carrinho.DoesNotExist:
+            return HttpResponse("Carrinho vazio")
+    else:
+        return redirect("main")
+
+
+def checkout_confirmacao(request):
+    return render(request, "checkout_confirmacao.html")
+
+
+# Outras views e código relacionado

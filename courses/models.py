@@ -9,7 +9,7 @@ class Instrutor(models.Model):
 
     def instrutor_foto_filename(instance, filename):
         ext = filename.split(".")[-1]
-        return f"{instance.user.username}_instrutor_foto.{ext}"
+        return f"{instance.user.username}.{ext}"
 
     def save(self, *args, **kwargs):
         # Chama a função que define o caminho da imagem
@@ -39,7 +39,7 @@ class Curso(models.Model):
 
     def curso_imagem_filename(instance, filename):
         ext = filename.split(".")[-1]
-        return f"{instance.título}_{instance.instrutor}_course_img.{ext}"
+        return f"{instance.título}_{instance.instrutor}.{ext}"
 
     def save(self, *args, **kwargs):
         # Chama a função que define o caminho da imagem
@@ -49,3 +49,26 @@ class Curso(models.Model):
 
     def __str__(self):
         return self.título
+
+
+class Pedido(models.Model):
+    AGUARDANDO_PAGAMENTO = "Aguardando Pagamento"
+    CONCLUIDO = "Concluído"
+
+    STATUS_CHOICES = [
+        (AGUARDANDO_PAGAMENTO, "Aguardando Pagamento"),
+        (CONCLUIDO, "Concluído"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cursos = models.ManyToManyField(Curso)
+    data_pedido = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=AGUARDANDO_PAGAMENTO
+    )
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+
+class Carrinho(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    cursos = models.ManyToManyField(Curso)

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{%load static%}
+
+{% block title %}
+Carrinho de Compras
+{% endblock %}
+
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<h1>Carrinho de Compras</h1>
+{% if cursos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Curso</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for curso in cursos %}
+                <tr>
+                    <td>{{ curso.título }}</td>
+                    <td>R$ {{ curso.preço }}</td>
+                    <td>
+                        <form method="post" action="{% url 'remove_from_cart' curso.id %}">
+                            {% csrf_token %}
+                            <button type="submit">Remover do Carrinho</button>
+                        </form> 
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td><strong>Total:</strong></td>
+                <td><strong>R$ {{ total }}</strong></td>
+                <td>
+                    <form method="POST" action="{% url 'checkout' %}">
+                        {% csrf_token %}
+                        <button type="submit">Finalizar Compra</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <p>Seu carrinho está vazio.</p>
+{% endif %}
+<a href="{% url 'main' %}">Continuar Comprando</a>
+{% endblock %}

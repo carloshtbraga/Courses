@@ -1,52 +1,61 @@
-{% extends 'base.html' %}
-
-{%load static%}
-
-{% block title %}
-Detalhes do Curso
-{% endblock %}
-
-
-{% block styles %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/course_details.css' %}">
-{% endblock %}
-
-
-
-
-{% block content %}
+{% extends 'base.html' %} {%load static%} {% block title %} Detalhes do Curso 
+{%endblock %} {% block styles %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/course_details.css' %}"
+/>
+{% endblock %} {% block content %}
 <div class="container">
-    <h1 class="course-title">{{ curso.título }}</h1>
-    <div class="course-details">
-        <div class="course-image">
-            <img src="{{ curso.image.url }}" alt="{{ curso.título }}" width="200" height="200">
-        </div>
-        <div class="course-info">
-            <strong>Curso:</strong> {{ curso.título }}<br>
-            <strong>Categorias:</strong>
-            <ul class="category-list">
-                {% for categoria in curso.categorias.all %}
-                    <li>{{ categoria.nome }}</li>
-                {% endfor %}
-            </ul>
-            <strong>Preço:</strong> R$ {{ curso.preço }}<br>
-            <strong>Autor:</strong> {{ curso.instrutor }}<br>
-            <strong>Publicado em:</strong> {{ curso.data_envio|date:"d/m/Y" }}<br>
-        </div>
+  <h1 class="course-title">{{ curso.título }}</h1>
+  <div class="course-details">
+    <div class="course-image">
+      <img
+        src="{{ curso.image.url }}"
+        alt="{{ curso.título }}"
+        width="200"
+        height="200"
+      />
     </div>
-    <div class="course-description">
-        <h2>Descrição do Curso</h2>
-        <p>{{ curso.descrição }}</p>
+    <div class="course-info">
+      <strong>Curso:</strong> {{ curso.título }}<br />
+      <strong>Categorias:</strong>
+      <ul class="category-list">
+        {% for categoria in curso.categorias.all %}
+        <li>{{ categoria.nome }}</li>
+        {% endfor %}
+      </ul>
+      <strong>Preço:</strong> R$ {{ curso.preço }}<br />
+      <strong>Autor:</strong> {{ curso.instrutor }}<br />
+      <strong>Publicado em:</strong> {{ curso.data_envio|date:"d/m/Y" }}<br />
     </div>
-    <div class="course-description">
-        <h2>Sobre o Instrutor</h2>
-        <img src="{{ curso.instrutor.foto.url }}" alt="{{ curso.instrutor.user.username }} - Foto do Instrutor" width="200" height="200">
-        <p>{{ curso.instrutor.biografia }}</p>
-    </div>
-    
+  </div>
+  <div class="course-description">
+    <h2>Descrição do Curso</h2>
+    <p>{{ curso.descrição }}</p>
+  </div>
+  <div class="course-description">
+    <h2>Sobre o Instrutor</h2>
+    <img
+      src="{{ curso.instrutor.foto.url }}"
+      alt="{{ curso.instrutor.user.username }} - Foto do Instrutor"
+      width="200"
+      height="200"
+    />
+    <p>{{ curso.instrutor.biografia }}</p>
+  </div>
 </div>
 
+<form method="post" action="{% url 'add_to_cart' curso.id %}">
+  {% csrf_token %}
+  <button type="submit">Adicionar ao Carrinho</button>
+</form>
+
+<a href="{% url 'carrinho' %}">
+  <button>Ir para o Carrinho</button>
+</a>
+
 <div class="back-button">
-    <a href="{% url 'main' %}">Voltar para a Página Principal</a>
+  <a href="{% url 'main' %}">Voltar para a Página Principal</a>
 </div>
 {% endblock %}
