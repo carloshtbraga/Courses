@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User, Group
-from .models import Instrutor, Curso, Categoria, Carrinho
+from .models import Instrutor, Curso, Categoria, Carrinho, Pedido     
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as django_login
 from django.contrib.auth import logout as django_logout
@@ -177,15 +177,6 @@ def remove_from_cart(request, curso_id):
         return HttpResponse("Você não está logado")
 
 
-from django.shortcuts import render, redirect
-from .models import Carrinho, Pedido
-
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Carrinho, Pedido, Curso
-
-
 def checkout(request):
     if request.method == "POST":
         user = request.user
@@ -214,6 +205,3 @@ def checkout(request):
 
 def checkout_confirmacao(request):
     return render(request, "checkout_confirmacao.html")
-
-
-# Outras views e código relacionado

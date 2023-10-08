@@ -13,7 +13,7 @@ Main
 
 
 {% block content %}
-<h1>Bem-vindo à Página Principal</h1>
+<h1>Bem-vindo à Página Principal, Sr(a) {{ user.username}}</h1>
 <form action="{% url 'search_courses' %}" method="get">
     <div class="search-form">
         <input type="text" name="title" placeholder="Buscar por título do curso">
